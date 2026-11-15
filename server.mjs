@@ -8,9 +8,15 @@ export default async function register(ctx) {
 
 	// GET /api/v1/m/hello/summary
 	ctx.route("GET", "/summary", async () => {
+		// Settings are declared in ledger-module.json ("settings"); Ledger draws the form under
+		// Settings → Hello module, on the tabs declared there, and each organization has its own values.
+		// Read them where they are used rather than keeping a copy.
+		const settings = await ctx.settings.get();
 		const accounts = await ctx.ledger.listAccounts();
 		const tb = await ctx.ledger.trialBalance();
 		return {
+			greeting: settings.greeting || "Hello from a module",
+			show_summary: settings.show_summary !== false,
 			accounts: accounts.length,
 			// Money is integer cents (bigint); it is sent as exact JSON numbers.
 			totals: tb.totals.map((t) => ({ currency: t.currency, debit_cents: t.debit_cents })),
@@ -19,7 +25,8 @@ export default async function register(ctx) {
 
 	// GET /api/v1/m/hello/notes
 	ctx.route("GET", "/notes", async () => {
-		const { rows } = await ctx.db.query(`SELECT id, body, created_by, created_at FROM ${notes} ORDER BY id DESC LIMIT 50`);
+		const { max_notes } = await ctx.settings.get();
+		const { rows } = await ctx.db.query(`SELECT id, body, created_by, created_at FROM ${notes} ORDER BY id DESC LIMIT $1`, [Number(max_notes) || 50]);
 		return { data: rows };
 	});
 

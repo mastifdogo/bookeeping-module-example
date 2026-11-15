@@ -18,11 +18,21 @@ In Ledger (0.6.0 or newer), open **Modules**, enter
 
 | File | Purpose |
 |---|---|
-| `ledger-module.json` | The manifest: id, name, version, and which files to use |
+| `ledger-module.json` | The manifest: id, name, version, which files to use, and the module's settings |
 | `server.mjs` | Backend: `register(ctx)` adds API routes under `/api/v1/m/hello/` |
 | `ui/index.html` | The page shown inside Ledger (served at `/m/hello/`) |
 | `migrations/001_notes.sql` | Creates the `notes` table in the module's own schema (`mod_hello`) |
 | `.github/workflows/release.yml` | Publishes a release when the version changes |
+
+## Settings
+
+The manifest's `settings` declares what a user can configure; Ledger draws
+the form under **Settings → Hello module** and stores the values (each
+organization has its own). This example has three settings on two tabs
+(`settings.tabs`, Ledger 0.19.6): the heading and whether to show the
+summary on **General**, and how many notes to list on **Notes**. A field
+names its tab with `"tab"`; without one it goes on the first tab.
+`server.mjs` reads them with `ctx.settings.get()` where they are used.
 
 The full module API is in
 [docs/MODULES.md](https://github.com/mastifdogo/Bookeeping/blob/main/docs/MODULES.md).

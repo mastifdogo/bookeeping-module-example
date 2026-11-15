@@ -1,11 +1,22 @@
 {
   "id": "hello",
   "name": "Hello module",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A minimal example: a summary of your books and a notes list stored in the module's own table.",
-  "ledger": ">=0.6.0",
+  "ledger": ">=0.19.6",
   "server": "server.mjs",
   "ui": "ui",
   "nav": { "label": "Hello" },
-  "migrations": "migrations"
+  "migrations": "migrations",
+  "settings": {
+    "tabs": [
+      { "id": "general", "label": "General", "help": "What the module's page says." },
+      { "id": "notes", "label": "Notes", "help": "How the notes list behaves." }
+    ],
+    "fields": [
+      { "key": "greeting", "label": "Heading", "type": "text", "default": "Hello from a module", "help": "Shown at the top of the module's page." },
+      { "key": "show_summary", "label": "Show the summary of the books", "type": "boolean", "default": true },
+      { "key": "max_notes", "label": "Notes shown", "type": "number", "min": 1, "max": 200, "default": 50, "tab": "notes", "help": "The newest notes are listed first." }
+    ]
+  }
 }

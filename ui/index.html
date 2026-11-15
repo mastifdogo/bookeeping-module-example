@@ -18,7 +18,7 @@
 </style>
 </head>
 <body>
-<h1>Hello from a module</h1>
+<h1 id="greeting">Hello from a module</h1>
 <p id="summary" class="muted">Loading…</p>
 
 <h2>Notes</h2>
@@ -38,8 +38,11 @@
 
 	async function load() {
 		const s = await api("/summary");
-		document.getElementById("summary").textContent =
-			`${s.accounts} accounts. ` + (s.totals.map((t) => `${t.currency} ${fmt(t.debit_cents)} total debits`).join(", ") || "No postings yet.");
+		// The heading and whether the summary shows come from the module's settings (Settings → Hello module).
+		document.getElementById("greeting").textContent = s.greeting;
+		const summary = document.getElementById("summary");
+		summary.hidden = !s.show_summary;
+		summary.textContent = `${s.accounts} accounts. ` + (s.totals.map((t) => `${t.currency} ${fmt(t.debit_cents)} total debits`).join(", ") || "No postings yet.");
 		const { data } = await api("/notes");
 		const ul = document.getElementById("notes");
 		ul.replaceChildren(
